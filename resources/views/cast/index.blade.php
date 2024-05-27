@@ -1,5 +1,7 @@
 @extends('template.master')
 
+@section('title','AdminLTE 3 | Data')
+
 @push('css')
 <!-- Google Font: Source Sans Pro -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -10,6 +12,7 @@
 @endpush
 
 @section('content')
+@if(Auth::check())
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -54,14 +57,18 @@
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $value->nama }}</td>
                         <td>{{ $value->umur }}</td>
-                        <td>{{ $value->bio }}</td>
                         <td><form action="{{ route('cast.destroy', $value->id) }}" method="post">
                             <a href="{{ route('cast.show', $value->id) }}" class="btn btn-sm btn-info">Detail</a>
+                            @if(Auth::check())
+                            @can('isAdmin')
                             <a href="{{ route('cast.edit', $value->id) }}" class="btn btn-sm btn-warning">Edit</a>
                         @csrf
                         @method('DELETE')
                               <input type="submit" class="btn btn-sm btn-danger my-1" value="Delete">
+                              @endcan
                             </form>
+                     
+                            @endif
                       </tr>
                     @empty
                       <tr>
@@ -83,6 +90,22 @@
     </section>
     <!-- /.content -->
 </div>
+                      @else
+                        <section class="content-header">
+                          <div class="container-fluid">
+                            <div class="row mb-2">
+                              <div class="col-sm-12">
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                  <h4 class="alert-heading">Silahkan Login Terlebih Dahulu</h4>
+                                  <p>Anda harus login untuk mengakses halaman ini.</p>
+                                  <hr>
+                                  <a href="{{ route('user.login') }}" class="btn btn-primary" style="text-decoration: none;">Login</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </section>
+@endif
 @endsection
 
 @push('js')
